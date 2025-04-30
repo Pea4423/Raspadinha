@@ -1,0 +1,187 @@
+<!DOCTYPE html>
+<html lang="pt-BR">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Miramour - Raspadinha</title>
+  <style>
+    body {
+      font-family: 'Arial', sans-serif;
+      background: #ffe4ec;
+      text-align: center;
+      padding: 40px;
+    }
+
+    h1 {
+      font-size: 2em;
+      color: #333;
+    }
+
+    .grid {
+      display: grid;
+      grid-template-columns: repeat(auto-fit, minmax(100px, 1fr)); /* Responsivo e alinhado */
+      gap: 20px;
+      max-width: 360px;
+      margin: 40px auto;
+    }
+
+    .card {
+      width: 100%;
+      aspect-ratio: 1 / 1; /* Mantém quadrado */
+      background-color: #aaa;
+      border-radius: 10px;
+      display: flex;
+      justify-content: center;
+      align-items: center;
+      font-size: 1.2em;
+      color: white;
+      cursor: pointer;
+      position: relative;
+      overflow: hidden;
+      transition: transform 0.3s, background-color 0.3s;
+    }
+
+    .card:hover {
+      transform: scale(1.05);
+    }
+
+    .card.revealed {
+      background-color: #fff;
+      color: #333;
+      font-weight: bold;
+    }
+
+    .hidden-text {
+      display: none;
+    }
+
+    .card.revealed .hidden-text {
+      display: block;
+    }
+
+    #message {
+      margin-top: 30px;
+      font-size: 1.3em;
+      font-weight: bold;
+      color: #444;
+      display: none;
+      opacity: 0;
+      transition: opacity 0.5s;
+    }
+
+    .buttons {
+      margin-top: 30px;
+      display: none;
+      flex-direction: column;
+      gap: 10px;
+    }
+
+    .buttons a {
+      display: inline-block;
+      padding: 10px 20px;
+      border-radius: 10px;
+      background-color: #ff69b4;
+      color: white;
+      font-size: 1em;
+      text-decoration: none;
+      transition: background-color 0.3s;
+    }
+
+    .buttons a:hover {
+      background-color: #d94f98;
+    }
+
+    .buttons a:active {
+      transform: scale(0.95);
+    }
+
+    @media (min-width: 400px) {
+      .buttons {
+        flex-direction: row;
+        justify-content: center;
+      }
+    }
+  </style>
+</head>
+<body>
+  <h1>Raspadinha Miramour</h1>
+  <p>Clique para descobrir uma surpresa! 🎁</p>
+
+  <div class="grid" id="grid" aria-live="polite">
+    <!-- Cards serão inseridos via JavaScript -->
+  </div>
+
+  <div id="message" aria-live="assertive">
+    Parabéns minha dádiva, sabia que sempre foi meu ponto de sorte?!
+  </div>
+
+  <div class="buttons" id="rewardButtons">
+    <a href="https://wa.me/5515997036220?text=Eu%20quero%20minha%20Carta%20%2B%20Premia%C3%A7%C3%A3o%20agora%20mesmo!" target="_blank" role="button">
+      Minha Carta + Premiação
+    </a>
+    <a href="https://wa.me/5515997036220?text=Quero%20s%C3%B3%20a%20premia%C3%A7%C3%A3o%20mesmo...%20mas%20sei%20que%20a%20carta%20vem%20junto%20%F0%9F%98%8E" target="_blank" role="button">
+      Apenas minha premiação (sei que a carta vem mesmo assim)
+    </a>
+  </div>
+
+  <script>
+    const premios = [
+      { texto: ' Pijama', premio: true },
+      { texto: ' Pijama', premio: true },
+      { texto: ' Pijama', premio: true },
+      { texto: '"Quase Tutti"', premio: false },
+      { texto: '"Errou por pouco monamour"', premio: false },
+      { texto: '"Minha beldade tá esperta"', premio: false },
+      { texto: '"Quase Tutti"', premio: false },
+      { texto: '"Errou por pouco monamour"', premio: false },
+      { texto: '"Minha beldade tá esperta"', premio: false }
+    ];
+
+    function embaralhar(array) {
+      for (let i = array.length - 1; i > 0; i--) {
+        const j = Math.floor(Math.random() * (i + 1));
+        [array[i], array[j]] = [array[j], array[i]];
+      }
+      return array;
+    }
+
+    let revealedPijamas = 0;
+    const grid = document.getElementById('grid');
+    const cards = embaralhar([...premios]);
+
+    cards.forEach((item) => {
+      const div = document.createElement('div');
+      div.className = 'card';
+      div.setAttribute('role', 'button');
+      div.setAttribute('aria-label', 'Clique para revelar');
+      div.onclick = function () { reveal(div, item.premio, item.texto); };
+
+      const span = document.createElement('span');
+      span.className = 'hidden-text';
+      span.textContent = item.texto;
+      div.appendChild(span);
+
+      grid.appendChild(div);
+    });
+
+    function reveal(element, isPrize, texto) {
+      if (element.classList.contains('revealed')) return;
+      element.classList.add('revealed');
+      element.querySelector('.hidden-text').style.display = 'block';
+
+      if (isPrize) {
+        revealedPijamas++;
+        if (revealedPijamas === 3) {
+          const message = document.getElementById('message');
+          message.style.display = 'block';
+          setTimeout(() => {
+            message.style.opacity = 1;
+          }, 10);
+
+          document.getElementById('rewardButtons').style.display = 'flex';
+        }
+      }
+    }
+  </script>
+</body>
+</html>
